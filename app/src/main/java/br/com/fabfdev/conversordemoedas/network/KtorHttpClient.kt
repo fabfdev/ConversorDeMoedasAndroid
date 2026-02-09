@@ -1,17 +1,39 @@
 package br.com.fabfdev.conversordemoedas.network
 
+import br.com.fabfdev.conversordemoedas.network.model.CurrencyTypesResult
+import br.com.fabfdev.conversordemoedas.network.model.ExchangeRateResult
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 
 object KtorHttpClient {
 
-    val client = HttpClient(Android) {
+    private const val BASE_URL = "http://10.0.2.2:8080"
+
+    private val client = HttpClient(Android) {
         install(Logging)
         install(ContentNegotiation) {
             json()
+        }
+    }
+
+    suspend fun getCurrencyTypes(): Result<CurrencyTypesResult> {
+        return requireGet("$BASE_URL/currency-types")
+    }
+
+    suspend fun getExchangeRate(from: String, to: String): Result<ExchangeRateResult> {
+        return requireGet("$BASE_URL/exchange-rate/$from/$to")
+    }
+
+    private suspend inline fun <reified T> requireGet(url: String): Result<T> {
+        return try {
+            Result.success(client.get(url).body())
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

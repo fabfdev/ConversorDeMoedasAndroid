@@ -91,10 +91,11 @@
                     android:importantForAccessibility="no" />
 
                 <Spinner
+                    android:id="@+id/spnFromExchange"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_weight="3"
-                    android:padding="8dp"
                     tools:listitem="@layout/item_currency_type"/>
 
             </LinearLayout>
@@ -142,10 +143,11 @@
                     android:importantForAccessibility="no" />
 
                 <Spinner
+                    android:id="@+id/spnToExchange"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_weight="3"
-                    android:padding="8dp"
                     tools:listitem="@layout/item_currency_type"/>
 
             </LinearLayout>
