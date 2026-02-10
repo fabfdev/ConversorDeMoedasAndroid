@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import br.com.fabfdev.conversordemoedas.R
 import br.com.fabfdev.conversordemoedas.databinding.ItemCurrencyTypeBinding
 import br.com.fabfdev.conversordemoedas.network.model.CurrencyType
 import coil3.load
-import coil3.svg.SvgDecoder
 
 class CurrencyTypesAdapter(
     private val currencyTypes: List<CurrencyType>
@@ -37,7 +35,6 @@ class CurrencyTypesAdapter(
                 .inflate(LayoutInflater.from(parent?.context))
             with(binding) {
                 tvCurrencyAcronym.text = item.acronym.uppercase()
-                println(item.countryFlagImgUrl)
                 ivFlag.load(item.countryFlagImgUrl)/* { // Para carregar SVG
                     decoderFactory { result, options, _ -> SvgDecoder(result.source, options) }
                 }*/
