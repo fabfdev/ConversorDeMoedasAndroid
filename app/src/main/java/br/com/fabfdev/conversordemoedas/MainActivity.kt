@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import br.com.fabfdev.conversordemoedas.databinding.ActivityMainBinding
 import br.com.fabfdev.conversordemoedas.network.model.CurrencyType
 import br.com.fabfdev.conversordemoedas.ui.CurrencyTypesAdapter
+import br.com.fabfdev.conversordemoedas.utils.addCurrencyMask
 import br.com.fabfdev.conversordemoedas.utils.updateTextInput
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        binding.etFromExchange.addCurrencyMask()
 
         lifecycleScope.apply {
             launch {
