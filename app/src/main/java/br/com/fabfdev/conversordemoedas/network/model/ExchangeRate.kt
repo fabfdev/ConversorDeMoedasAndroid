@@ -9,4 +9,8 @@ data class ExchangeRateResult(
     val to: String,
     @SerialName("exchange_rate")
     val exchangeRate: Double,
-)
+) {
+    companion object {
+        fun empty() = ExchangeRateResult(from = "", to = "", exchangeRate = 1.0)
+    }
+}
