@@ -43,4 +43,6 @@ class CurrencyExchangeViewModel: ViewModel() {
         }
     }
 
+    fun getCurrentExchangeRate() = _exchangeRate.value.getOrNull()?.exchangeRate ?: 0.0
+
 }

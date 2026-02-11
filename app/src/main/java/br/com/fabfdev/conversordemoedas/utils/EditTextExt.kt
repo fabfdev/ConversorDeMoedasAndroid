@@ -64,6 +64,12 @@ fun EditText.addCurrencyMask() {
     })
 }
 
+fun EditText.onTextChanged(onChanging: () -> Unit) {
+    addTextChangedListener(onTextChanged = { text, start, before, count ->
+        onChanging.invoke()
+    })
+}
+
 private fun getLocaleBasedOnCurrency(currencyAcronym: CurrencyTypeAcronym): Locale {
     val currency = Currency.getInstance(currencyAcronym)
 

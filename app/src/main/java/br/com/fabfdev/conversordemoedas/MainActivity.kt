@@ -1,5 +1,7 @@
 package br.com.fabfdev.conversordemoedas
 
+import android.icu.text.DecimalFormat
+import android.icu.text.DecimalFormatSymbols
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -14,8 +16,10 @@ import br.com.fabfdev.conversordemoedas.databinding.ActivityMainBinding
 import br.com.fabfdev.conversordemoedas.network.model.CurrencyType
 import br.com.fabfdev.conversordemoedas.ui.CurrencyTypesAdapter
 import br.com.fabfdev.conversordemoedas.utils.addCurrencyMask
+import br.com.fabfdev.conversordemoedas.utils.onTextChanged
 import br.com.fabfdev.conversordemoedas.utils.updateTextInput
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +38,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.etFromExchange.addCurrencyMask()
+        binding.etFromExchange.apply {
+            addCurrencyMask()
+            onTextChanged {
+                binding.generateConvertedValue(viewModel.getCurrentExchangeRate())
+            }
+        }
 
         lifecycleScope.apply {
             launch {
@@ -53,8 +62,10 @@ class MainActivity : AppCompatActivity() {
 
             launch {
                 viewModel.exchangeRate.collect { result ->
-                    result.onSuccess {
-                        println(it)
+                    result.onSuccess { exchangeRateResult ->
+                        exchangeRateResult?.let {
+                            binding.generateConvertedValue(it.exchangeRate)
+                        }
                     }.onFailure {
                         Toast.makeText(
                             this@MainActivity,
@@ -81,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     val selectedFromCurrency = currencyTypes[position]
                     val from = selectedFromCurrency.acronym
-                    val to = currencyTypes[position].acronym
+                    val to = currencyTypes[spnToExchange.selectedItemPosition].acronym
                     viewModel.requireExchangeRate(from = from, to = to)
                     etFromExchange.updateTextInput(selectedFromCurrency.symbol)
                 }
@@ -119,6 +130,22 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun ActivityMainBinding.generateConvertedValue(exchangeRate: Double) {
+        val values = etFromExchange.text.split(" ")
+        if (values.size > 1) {
+            val symbol = etToExchange.text.split(" ")[0]
+            val currencyValue = values[1]
+                .replace("[,.]".toRegex(), "")
+                .toDoubleOrNull() ?: 0.0
+            val formattedValue = DecimalFormat(
+                "#,##0.00",
+                DecimalFormatSymbols(Locale.getDefault())
+            ).format((currencyValue * exchangeRate) / 100)
+            etToExchange.setText(formattedValue)
+            etToExchange.updateTextInput(symbol)
         }
     }
 
