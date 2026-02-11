@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import br.com.fabfdev.conversordemoedas.databinding.ActivityMainBinding
 import br.com.fabfdev.conversordemoedas.network.model.CurrencyType
 import br.com.fabfdev.conversordemoedas.ui.CurrencyTypesAdapter
+import br.com.fabfdev.conversordemoedas.utils.updateTextInput
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -75,9 +76,11 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    val from = currencyTypes[position].acronym
-                    val to = currencyTypes[spnToExchange.selectedItemPosition].acronym
+                    val selectedFromCurrency = currencyTypes[position]
+                    val from = selectedFromCurrency.acronym
+                    val to = currencyTypes[position].acronym
                     viewModel.requireExchangeRate(from = from, to = to)
+                    etFromExchange.updateTextInput(selectedFromCurrency.symbol)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -96,12 +99,16 @@ class MainActivity : AppCompatActivity() {
                     id: Long
                 ) {
                     val from = currencyTypes[spnFromExchange.selectedItemPosition].acronym
-                    val to = currencyTypes[position].acronym
+                    val selectedToCurrency = currencyTypes[spnToExchange.selectedItemPosition]
+                    val to = selectedToCurrency.acronym
                     viewModel.requireExchangeRate(from = from, to = to)
+                    etToExchange.updateTextInput(selectedToCurrency.symbol)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     currencyTypes.firstOrNull()?.let { firstCurrencyType ->
+                        etFromExchange.updateTextInput(firstCurrencyType.symbol)
+                        etToExchange.updateTextInput(firstCurrencyType.symbol)
                         viewModel.requireExchangeRate(
                             from = firstCurrencyType.acronym,
                             to = firstCurrencyType.acronym,
